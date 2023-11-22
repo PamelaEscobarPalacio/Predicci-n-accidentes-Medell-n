@@ -5,8 +5,8 @@
 {% endblock %}
 
 {% block content %}
-<div class="prediccion-container">
-    <h1>Predicción de accidentes tipo choque entre 2021 y 2022</h1>
+<div class="container">
+    <h1>Predicción de accidentes tipo choque entre 2021 y 2024</h1>
     <p>A continuación encontrarás una fecha inicial y una fecha final, la cual puedes llenar con el día, mes y año que deseas predecir entre ambos años.</p>
     <p>Instrucciones:</p>
     <ul>
@@ -14,21 +14,60 @@
         <li>Si desea predecir entre dos fechas diferentes, entonces recuerde que la fecha inicial debe ser menor a la fecha final.</li>
         <li>Tener en cuenta que el resultado entre dos fechas diferentes es el total de accidentes que pueden ocurrir entre estas fechas.</li>
     </ul>
-
-    <form method="POST" action="#">
-        <label for="fecha_inicial">Fecha Inicial:</label>
-        <input type="date" id="fecha_inicial" name="fecha_inicial" min="2021-01-01" max="2022-12-31" required value="{{ request.form.get('fecha_inicial', '') }}">
-        <br>
-        <label for="fecha_final">Fecha Final:</label>
-        <input type="date" id="fecha_final" name="fecha_final" min="2021-01-01" max="2022-12-31" required value="{{ request.form.get('fecha_final', '') }}">
-        <br>
-        <button type="submit">Predecir</button>
-    </form>
-
-    <div class="resultado">
-        <p>Cantidad de choques = {{predict}}</p>
-        <br>
-        <br>
+    
+    <div class="form-section">
+        <p>A continuación, selecciona una fecha inicial y una fecha final para obtener la predicción.</p>
+        <form method="POST" action="{{ url_for('prediccion') }}">
+            <div class="form-group">
+                <label for="fecha_inicial">Fecha Inicial:</label>
+                <input type="date" id="fecha_inicial" name="fecha_inicial" min="2021-01-01" max="2024-12-31" required value="{{ request.form.get('fecha_inicial', '') }}">
+            </div>
+            <div class="form-group">
+                <label for="fecha_final">Fecha Final:</label>
+                <input type="date" id="fecha_final" name="fecha_final" min="2021-01-01" max="2024-12-31" required value="{{ request.form.get('fecha_final', '') }}">
+            </div>
+            <button type="submit" class="button">Predecir</button>
+        </form>
     </div>
+
+    {% if predict %}
+    <div class="graphics-section">
+        <div class="resultado">
+            <p>Cantidad de choques: {{ predict }}</p>
+            <div class="graphics-controls">
+                <button onclick="mostrarGrafico('D')">Diario</button>
+                <button onclick="mostrarGrafico('W')">Semanal</button>
+                <button onclick="mostrarGrafico('M')">Mensual</button>
+            </div>
+        </div>
+        <div id="graficos">
+            <div id="graficoD" class="grafico" style="display: none;">
+                <img src="{{ url_for('static', filename='predicciones_D.png') }}" alt="Gráfico Diario">
+            </div>
+            <div id="graficoW" class="grafico" style="display: none;">
+                <img src="{{ url_for('static', filename='predicciones_W.png') }}" alt="Gráfico Semanal">
+            </div>
+            <div id="graficoM" class="grafico" style="display: none;">
+                <img src="{{ url_for('static', filename='predicciones_M.png') }}" alt="Gráfico Mensual">
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
+
+<script>
+function mostrarGrafico(frecuencia) {
+    // Ocultar todos los gráficos
+    var graficos = document.querySelectorAll('.grafico');
+    graficos.forEach(function(grafico) {
+        grafico.style.display = 'none';
+    });
+
+    // Mostrar el gráfico correspondiente a la frecuencia seleccionada
+    document.getElementById('grafico' + frecuencia).style.display = 'block';
+}
+// Mostrar inicialmente el gráfico diario
+mostrarGrafico('D');
+</script>
+
 {% endblock %}

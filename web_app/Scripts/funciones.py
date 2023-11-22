@@ -1,8 +1,10 @@
+import os
 import pandas as pd
 import folium
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 import geopandas as gpd
 from IPython.display import IFrame
 from datetime import datetime, date, timedelta
@@ -40,15 +42,40 @@ def lista_cluster(cluster):
    lista_cluster = datos_cluster['barrio'].tolist()
    return lista_cluster
 
+
 def prediccion_modelo(fecha_inicial, fecha_final):
-   df = pd.read_csv("data/validacion.csv",  sep=",", decimal=".")
-   df['fecha'] = pd.to_datetime(df['fecha'])
-   inicio = datetime.strptime(fecha_inicial, '%Y/%m/%d')
-   fin = datetime.strptime(fecha_final, '%Y/%m/%d')
-   mask = (df['fecha'] >= inicio) & (df['fecha'] <= fin)
-   accidentes = df.loc[mask]['prediccion'].sum()
-   accidentes_entero = int(accidentes)
-   return    accidentes_entero
+    df = pd.read_csv("data/validacion.csv", sep=",", decimal=".")
+    df['fecha'] = pd.to_datetime(df['fecha'])
+    inicio = datetime.strptime(fecha_inicial, '%d/%m/%Y')
+    fin = datetime.strptime(fecha_final, '%d/%m/%Y')
+    mask = (df['fecha'] >= inicio) & (df['fecha'] <= fin)
+    df_filtrado = df.loc[mask]
+    accidentes = df_filtrado['prediccion'].sum()
+    accidentes_entero = int(accidentes)
+    rutas_graficos = {}
+    for frecuencia in ['D', 'W', 'M']:
+        df_agrupado = df_filtrado.groupby(pd.Grouper(key='fecha', freq=frecuencia))['prediccion'].sum().reset_index()
+        
+        # Generar el gráfico
+        plt.figure(figsize=(10, 5))
+        plt.plot(df_agrupado['fecha'], df_agrupado['prediccion'], marker='o', linestyle='-', color='blue')
+        plt.title(f'Predicción de Accidentes - Frecuencia {frecuencia}')
+        plt.xlabel('Fecha')
+        plt.ylabel('Número de Accidentes')
+        plt.grid(True)
+        plt.tight_layout()
+        
+        # Guardar la figura
+        ruta_grafico = f'static/predicciones_{frecuencia}.png'
+        plt.savefig(ruta_grafico)
+        plt.close()
+        
+        rutas_graficos[frecuencia] = os.path.basename(ruta_grafico)
+
+    return accidentes_entero, rutas_graficos
+
+
+    
 
 def crear_lista(fecha1,fecha2,barrio,tipo):
     datos = pd.read_csv('data/data_limpia-1.csv', sep=',', encoding='utf-8')

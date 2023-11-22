@@ -352,3 +352,82 @@ footer {
     background-color: #333;
     color: #fff;
 }
+
+/* Estilos para el gráfico de predicciones */
+.grafico-prediccion {
+    width: 100%; /* Usa todo el ancho disponible del contenedor */
+    height: auto; /* Mantener la proporción original */
+    margin: 10px 0; /* Espacio antes y después del gráfico */
+}
+
+/* Estilo para la descripción del resultado de predicciones */
+.resultado p {
+    text-align: center; /* Centrar el texto */
+    color: #3498db; /* Color azul para que coincida con la barra de navegación */
+    font-size: 18px; /* Tamaño de fuente un poco más grande para destacar */
+    margin-bottom: 20px; /* Espacio antes del gráfico */
+}
+
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+.form-section, .graphics-section {
+    margin-bottom: 30px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+.input, .button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.resultado {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.graphics-controls {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.graphics-controls button {
+    margin-right: 10px;
+}
+
+.grafico {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.grafico img {
+    max-width: 100%;
+    height: auto;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+}
